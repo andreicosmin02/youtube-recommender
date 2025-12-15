@@ -35,7 +35,7 @@ It features a modern React frontend and a robust Spring Boot backend with a Post
 ## Key Features
 
 * **Semantic Search:** Finds videos based on meaning ("I want to learn Java") rather than just keywords.
-* **AI Explanations:** Generates a unique paragraph explaining why the videos were recommended using GPT.
+* **AI Explanations:** Generates a unique paragraph explaining why the videos were recommended using ollama.
 * **Granular Interactions:**
     * Like / Dislike
     * Watch Later list
