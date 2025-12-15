@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: local-postgres
+    environment:
+      POSTGRES_DB: recommender_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      # host:container — use 5433 on host to dodge any local Postgres
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d recommender_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+  ollama:
+    image: ollama/ollama:latest
+    container_name: local-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    healthcheck:
+      # CHANGED: Use 'ollama list' instead of 'curl'
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build: .  # Assumes Dockerfile is in the same folder
+    container_name: youtube-recommender
+    ports:
+      - "8080:8080"
+    environment:
+      # HERE IS WHERE YOU ADD THE KEY
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY}
+      # You must also point the app to the docker postgres container, not localhost
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/recommender_db
+      - SPRING_AI_OLLAMA_BASE_URL=http://ollama:11434
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+volumes:
+  pgdata:
+  ollama:
