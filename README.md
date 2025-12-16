@@ -18,7 +18,7 @@ It features a modern React frontend and a robust Spring Boot backend with a Post
 
 ### Backend
 * **Java 21** & **Spring Boot 3.4**
-* **Spring AI** (Integration with OpenAI API)
+* **Spring AI**
 * **Youtube API V3**
 * **Hibernate / JPA** (ORM)
 * **PostgreSQL** + **pgvector extension** (Vector Database)
